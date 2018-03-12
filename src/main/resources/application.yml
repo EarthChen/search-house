@@ -29,6 +29,12 @@ security:
   basic:
     enabled: false
 
+server:
+  error:
+    whitelabel:
+      enabled: false
+
+
 
 
 
