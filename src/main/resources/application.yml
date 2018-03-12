@@ -1,53 +1,15 @@
 spring:
-  datasource:
-    username: root
-    password: 123456
-    url: jdbc:mysql://localhost/search-house?characterEncoding=utf-8&useSSL=false
-    type: com.alibaba.druid.pool.DruidDataSource
-    druid:
-      #连接池配置
-      filters: stat,wall,log4j
-      maxActive: 20
-      initialSize: 1
-      maxWait: 60000
-      minIdle: 1
-      timeBetweenEvictionRunsMillis: 60000
-      minEvictableIdleTimeMillis: 300000
-      validationQuery: select 'x'
-      testWhileIdle: true
-      testOnBorrow: false
-      testOnReturn: false
-      poolPreparedStatements: true
-      maxOpenPreparedStatements: 20
-      connection-properties: druid.stat.merggSql=ture;druid.stat.slowSqlMillis=5000
-      # WebStatFilter配置
-      web-stat-filter:
-        enabled: true
-#        url-pattern:
-        exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*"
-#        session-stat-enable:
-#        session-stat-max-count:
-#        principal-session-name:
-#        principal-cookie-name:
-#        profile-enable:
-      stat-view-servlet:
-        enabled: true
-#        url-pattern:
-#        reset-enable:
-        login-username: username
-        login-password: password
-#        allow:
-#        deny:
+  profiles:
+    active: dev
 
-  jpa:
-    show-sql: true
-    hibernate:
-      ddl-auto: validate
+#    hibernate:
+#      ddl-auto: validate
 
   # 设置session会话存储类型
   session:
     # 内存
     store-type: hash_map
+
 
 logging:
   level:
