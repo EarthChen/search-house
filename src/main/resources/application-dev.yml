@@ -38,3 +38,6 @@ spring:
         login-password: password
 #        allow:
 #        deny:
+
+  thymeleaf:
+    cache: false
