@@ -10,4 +10,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @date: 2018/03/12
  */
 public interface UserDao extends JpaRepository<User, Long> {
+
+    /**
+     * 根据名字查找用户
+     *
+     * @param userName
+     * @return
+     */
+    User findByName(String userName);
 }

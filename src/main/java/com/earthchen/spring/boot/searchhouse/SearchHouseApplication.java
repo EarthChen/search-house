@@ -6,6 +6,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * 启动类
+ *
+ * @author: EarthChen
+ * @date: 2018/03/12
  */
 @SpringBootApplication
 @EnableTransactionManagement
