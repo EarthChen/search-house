@@ -41,3 +41,11 @@ spring:
 
   thymeleaf:
     cache: false
+
+  http:
+      # multipart config
+    multipart:
+      enabled: true
+      location: /home/earthchen/study/spring/SpringBootProjects/search-house/tmp
+      file-size-threshold: 5MB
+      max-request-size: 20MB

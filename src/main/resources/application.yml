@@ -11,6 +11,8 @@ spring:
     suffix: .html
 
 
+
+
 #    hibernate:
 #      ddl-auto: validate
 
@@ -33,6 +35,13 @@ server:
   error:
     whitelabel:
       enabled: false
+
+# 七牛云配置
+qiniu:
+  accessKey: BjSrFopaG-Qpsbj6tiAOvRKTdBecktBYYYw9B9bE
+  secretKey: 1FKWdO_E0sKjIghhIfv_8wujMAznQ3s_qbXTot8e
+  bucket: search-house
+  cdnPrefix: p5jbnmadg.bkt.clouddn.com
 
 
 
