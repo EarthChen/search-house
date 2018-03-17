@@ -19,7 +19,7 @@ spring:
   # 设置session会话存储类型
   session:
     # 内存
-    store-type: hash_map
+    store-type: redis
 
 
 logging:

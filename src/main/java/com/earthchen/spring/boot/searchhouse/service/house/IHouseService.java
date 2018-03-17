@@ -1,7 +1,9 @@
 package com.earthchen.spring.boot.searchhouse.service.house;
 
+import com.earthchen.spring.boot.searchhouse.service.ServiceMultiResult;
 import com.earthchen.spring.boot.searchhouse.service.ServiceResult;
 import com.earthchen.spring.boot.searchhouse.web.dto.HouseDTO;
+import com.earthchen.spring.boot.searchhouse.web.form.DatatableSearchForm;
 import com.earthchen.spring.boot.searchhouse.web.form.HouseForm;
 
 
@@ -22,11 +24,11 @@ public interface IHouseService {
     ServiceResult<HouseDTO> save(HouseForm houseForm);
 
 
-
-
-
-
-
-
-
+    /**
+     * 管理员查询
+     *
+     * @param searchBody
+     * @return
+     */
+    ServiceMultiResult<HouseDTO> adminQuery(DatatableSearchForm searchBody);
 }

@@ -2,6 +2,7 @@ package com.earthchen.spring.boot.searchhouse.web.controller.admin;
 
 import com.earthchen.spring.boot.searchhouse.domain.SupportAddress;
 import com.earthchen.spring.boot.searchhouse.enums.ResultEnum;
+import com.earthchen.spring.boot.searchhouse.service.ServiceMultiResult;
 import com.earthchen.spring.boot.searchhouse.service.ServiceResult;
 import com.earthchen.spring.boot.searchhouse.service.house.IAddressService;
 import com.earthchen.spring.boot.searchhouse.service.house.IHouseService;
@@ -9,7 +10,9 @@ import com.earthchen.spring.boot.searchhouse.service.house.IQiNiuService;
 import com.earthchen.spring.boot.searchhouse.web.dto.HouseDTO;
 import com.earthchen.spring.boot.searchhouse.web.dto.QiNiuPutRet;
 import com.earthchen.spring.boot.searchhouse.web.dto.SupportAddressDTO;
+import com.earthchen.spring.boot.searchhouse.web.form.DatatableSearchForm;
 import com.earthchen.spring.boot.searchhouse.web.form.HouseForm;
+import com.earthchen.spring.boot.searchhouse.web.vo.ApiDataTableVO;
 import com.earthchen.spring.boot.searchhouse.web.vo.ResultVO;
 import com.google.gson.Gson;
 import com.qiniu.common.QiniuException;
@@ -92,8 +95,30 @@ public class AdminController {
     }
 
     @GetMapping("/add/house")
-    public String addHousePage(){
+    public String addHousePage() {
         return "admin/house-add";
+    }
+
+    /**
+     * 分页显示
+     * <p>
+     * 查询
+     *
+     * @param searchBody
+     * @return
+     */
+    @PostMapping("/houses")
+    @ResponseBody
+    public ApiDataTableVO houses(@ModelAttribute DatatableSearchForm searchBody) {
+        ServiceMultiResult<HouseDTO> result = houseService.adminQuery(searchBody);
+
+        ApiDataTableVO response = new ApiDataTableVO(ResultEnum.SUCCESS);
+        response.setData(result.getResult());
+        response.setRecordsFiltered(result.getTotal());
+        response.setRecordsTotal(result.getTotal());
+
+        response.setDraw(searchBody.getDraw());
+        return response;
     }
 
 

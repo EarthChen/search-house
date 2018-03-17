@@ -49,3 +49,13 @@ spring:
       location: /home/earthchen/study/spring/SpringBootProjects/search-house/tmp
       file-size-threshold: 5MB
       max-request-size: 20MB
+
+
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    timeout: 3
+
+
+
+
