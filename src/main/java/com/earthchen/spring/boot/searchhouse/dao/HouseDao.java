@@ -13,6 +13,12 @@ import org.springframework.data.repository.query.Param;
  */
 public interface HouseDao extends PagingAndSortingRepository<House, Long>, JpaSpecificationExecutor<House> {
 
+    /**
+     * 根据id和封面更新封面
+     *
+     * @param id
+     * @param cover
+     */
     @Modifying
     @Query("update House as house set house.cover = :cover where house.id = :id")
     void updateCover(@Param(value = "id") Long id, @Param(value = "cover") String cover);

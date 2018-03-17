@@ -7,6 +7,8 @@ import com.earthchen.spring.boot.searchhouse.enums.HouseStatusEnum;
 import com.earthchen.spring.boot.searchhouse.service.ServiceMultiResult;
 import com.earthchen.spring.boot.searchhouse.service.ServiceResult;
 import com.earthchen.spring.boot.searchhouse.service.house.IHouseService;
+import com.earthchen.spring.boot.searchhouse.service.house.IQiNiuService;
+import com.earthchen.spring.boot.searchhouse.service.search.ISearchService;
 import com.earthchen.spring.boot.searchhouse.util.LoginUserUtil;
 import com.earthchen.spring.boot.searchhouse.web.dto.HouseDTO;
 import com.earthchen.spring.boot.searchhouse.web.dto.HouseDetailDTO;
@@ -14,6 +16,8 @@ import com.earthchen.spring.boot.searchhouse.web.dto.HousePictureDTO;
 import com.earthchen.spring.boot.searchhouse.web.form.DatatableSearchForm;
 import com.earthchen.spring.boot.searchhouse.web.form.HouseForm;
 import com.earthchen.spring.boot.searchhouse.web.form.PhotoForm;
+import com.qiniu.common.QiniuException;
+import com.qiniu.http.Response;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,6 +26,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
@@ -58,6 +63,15 @@ public class HouseServiceImpl implements IHouseService {
 
     @Autowired
     private HousePictureDao housePictureDao;
+
+    @Autowired
+    private HouseSubscribeDao subscribeDao;
+
+    @Autowired
+    private ISearchService searchService;
+
+    @Autowired
+    private IQiNiuService qiNiuService;
 
 
     @Override
@@ -153,6 +167,161 @@ public class HouseServiceImpl implements IHouseService {
         });
 
         return new ServiceMultiResult<>(houses.getTotalElements(), houseDTOS);
+    }
+
+    /**
+     * @param houseForm
+     * @return
+     */
+    @Override
+    @Transactional
+    public ServiceResult update(HouseForm houseForm) {
+        House house = houseDao.findOne(houseForm.getId());
+        if (house == null) {
+            return ServiceResult.notFound();
+        }
+
+        HouseDetail detail = houseDetailDao.findByHouseId(house.getId());
+        if (detail == null) {
+            return ServiceResult.notFound();
+        }
+
+        ServiceResult wrapperResult = wrapperDetailInfo(detail, houseForm);
+        if (wrapperResult != null) {
+            return wrapperResult;
+        }
+
+        houseDetailDao.save(detail);
+
+        List<HousePicture> pictures = generatePictures(houseForm, houseForm.getId());
+        housePictureDao.save(pictures);
+
+        if (houseForm.getCover() == null) {
+            houseForm.setCover(house.getCover());
+        }
+
+        modelMapper.map(houseForm, house);
+        house.setLastUpdateTime(new Date());
+        houseDao.save(house);
+
+        if (house.getStatus() == HouseStatusEnum.PASSES.getValue()) {
+            searchService.index(house.getId());
+        }
+
+        return ServiceResult.success();
+    }
+
+    /**
+     * 根据houseid查询完整的信息
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public ServiceResult<HouseDTO> findCompleteOne(Long id) {
+        House house = houseDao.findOne(id);
+        if (house == null) {
+            return ServiceResult.notFound();
+        }
+
+        HouseDetail detail = houseDetailDao.findByHouseId(id);
+        List<HousePicture> pictures = housePictureDao.findAllByHouseId(id);
+
+        HouseDetailDTO detailDTO = modelMapper.map(detail, HouseDetailDTO.class);
+        List<HousePictureDTO> pictureDTOS = new ArrayList<>();
+        for (HousePicture picture : pictures) {
+            HousePictureDTO pictureDTO = modelMapper.map(picture, HousePictureDTO.class);
+            pictureDTOS.add(pictureDTO);
+        }
+
+
+        List<HouseTag> tags = houseTagDao.findAllByHouseId(id);
+        List<String> tagList = new ArrayList<>();
+        for (HouseTag tag : tags) {
+            tagList.add(tag.getName());
+        }
+
+        HouseDTO result = modelMapper.map(house, HouseDTO.class);
+        result.setHouseDetail(detailDTO);
+        result.setPictures(pictureDTOS);
+        result.setTags(tagList);
+
+        // 已登录用户
+        if (LoginUserUtil.getLoginUserId() > 0) {
+            HouseSubscribe subscribe = subscribeDao.findByHouseIdAndUserId(house.getId(), LoginUserUtil.getLoginUserId());
+            if (subscribe != null) {
+                result.setSubscribeStatus(subscribe.getStatus());
+            }
+        }
+
+        return ServiceResult.of(result);
+    }
+
+    @Override
+    @Transactional
+    public ServiceResult updateCover(Long coverId, Long targetId) {
+        HousePicture cover = housePictureDao.findOne(coverId);
+        if (cover == null) {
+            return ServiceResult.notFound();
+        }
+
+        houseDao.updateCover(targetId, cover.getPath());
+        return ServiceResult.success();
+    }
+
+    @Override
+    public ServiceResult removePhoto(Long id) {
+        HousePicture picture = housePictureDao.findOne(id);
+        if (picture == null) {
+            return ServiceResult.notFound();
+        }
+
+        try {
+            Response response = qiNiuService.delete(picture.getPath());
+            if (response.isOK()) {
+                housePictureDao.delete(id);
+                return ServiceResult.success();
+            } else {
+                return new ServiceResult(false, response.error);
+            }
+        } catch (QiniuException e) {
+            e.printStackTrace();
+            return new ServiceResult(false, e.getMessage());
+        }
+    }
+
+    @Override
+    @Transactional
+    public ServiceResult addTag(Long houseId, String tag) {
+        House house = houseDao.findOne(houseId);
+        if (house == null) {
+            return ServiceResult.notFound();
+        }
+
+        HouseTag houseTag = houseTagDao.findByNameAndHouseId(tag, houseId);
+        if (houseTag != null) {
+            return new ServiceResult(false, "标签已存在");
+        }
+
+        houseTagDao.save(new HouseTag(houseId, tag));
+        return ServiceResult.success();
+    }
+
+    @Override
+    @Transactional
+    public ServiceResult removeTag(Long houseId, String tag) {
+        House house = houseDao.findOne(houseId);
+        if (house == null) {
+            return ServiceResult.notFound();
+        }
+
+        HouseTag houseTag = houseTagDao.findByNameAndHouseId(tag, houseId);
+        if (houseTag == null) {
+            return new ServiceResult(false, "标签不存在");
+        }
+
+        houseTagDao.delete(houseTag.getId());
+        return ServiceResult.success();
     }
 
 
