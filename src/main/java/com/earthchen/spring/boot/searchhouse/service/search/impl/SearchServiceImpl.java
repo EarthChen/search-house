@@ -18,19 +18,12 @@ public class SearchServiceImpl implements ISearchService {
         this.index(houseId, 0);
     }
 
+    @Override
+    public void remove(Long houseId) {
+
+    }
+
     private void index(Long houseId, int retry) {
-//        if (retry > HouseIndexMessage.MAX_RETRY) {
-//            log.error("Retry index times over 3 for house: " + houseId + " Please check it!");
-//            return;
-//        }
-//
-//        HouseIndexMessage message = new HouseIndexMessage(houseId, HouseIndexMessage.INDEX, retry);
-//        try {
-//            kafkaTemplate.send(INDEX_TOPIC, objectMapper.writeValueAsString(message));
-//        } catch (JsonProcessingException e) {
-//            log.error("Json encode error for " + message);
-//        }
-//
-//    }
+
     }
 }

@@ -1,6 +1,8 @@
 package com.earthchen.spring.boot.searchhouse.web.controller.admin;
 
+import com.earthchen.spring.boot.searchhouse.constant.HouseOperation;
 import com.earthchen.spring.boot.searchhouse.domain.SupportAddress;
+import com.earthchen.spring.boot.searchhouse.enums.HouseStatusEnum;
 import com.earthchen.spring.boot.searchhouse.enums.ResultEnum;
 import com.earthchen.spring.boot.searchhouse.service.ServiceMultiResult;
 import com.earthchen.spring.boot.searchhouse.service.ServiceResult;
@@ -338,6 +340,45 @@ public class AdminController {
         } else {
             return ResultVO.ofMessage(HttpStatus.BAD_REQUEST.value(), result.getMessage());
         }
+    }
+
+    /**
+     * 审核接口
+     *
+     * @param id
+     * @param operation
+     * @return
+     */
+    @PutMapping("/house/operate/{id}/{operation}")
+    @ResponseBody
+    public ResultVO operateHouse(@PathVariable(value = "id") Long id,
+                                 @PathVariable(value = "operation") int operation) {
+        if (id <= 0) {
+            return ResultVO.ofStatus(ResultEnum.NOT_VALID_PARAM);
+        }
+        ServiceResult result;
+
+        switch (operation) {
+            case HouseOperation.PASS:
+                result = this.houseService.updateStatus(id, HouseStatusEnum.PASSES.getValue());
+                break;
+            case HouseOperation.PULL_OUT:
+                result = this.houseService.updateStatus(id, HouseStatusEnum.NOT_AUDITED.getValue());
+                break;
+            case HouseOperation.DELETE:
+                result = this.houseService.updateStatus(id, HouseStatusEnum.DELETED.getValue());
+                break;
+            case HouseOperation.RENT:
+                result = this.houseService.updateStatus(id, HouseStatusEnum.RENTED.getValue());
+                break;
+            default:
+                return ResultVO.ofStatus(ResultEnum.BAD_REQUEST);
+        }
+
+        if (result.isSuccess()) {
+            return ResultVO.ofSuccess(null);
+        }
+        return ResultVO.ofMessage(HttpStatus.BAD_REQUEST.value(), result.getMessage());
     }
 
 

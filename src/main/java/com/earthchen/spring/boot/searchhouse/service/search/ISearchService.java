@@ -14,4 +14,11 @@ public interface ISearchService {
      * @param houseId
      */
     void index(Long houseId);
+
+    /**
+     * 删除索引
+     *
+     * @param houseId
+     */
+    void remove(Long houseId);
 }
