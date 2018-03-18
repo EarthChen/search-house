@@ -448,7 +448,7 @@ public class HouseServiceImpl implements IHouseService {
             houseDTO.setHouseDetail(detailDTO);
         });
 
-//        List<HouseTag> houseTags = houseTagDao.findAllByHouseIdIn(houseIds);
+        List<HouseTag> houseTags = houseTagDao.findAllByHouseIdIn(houseIds);
 //        houseTags.forEach(houseTag -> {
 //            HouseDTO house = idToHouseMap.get(houseTag.getHouseId());
 //            house.getTags().add(houseTag.getName());

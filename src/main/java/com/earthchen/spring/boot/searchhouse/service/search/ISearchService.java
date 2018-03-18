@@ -26,6 +26,12 @@ public interface ISearchService {
      */
     void remove(Long houseId);
 
+    /**
+     * 查询房源接口
+     *
+     * @param rentSearch
+     * @return
+     */
     ServiceMultiResult<Long> query(RentSearchForm rentSearch);
 
     ServiceResult<Long> aggregateDistrictHouse(String enName, String enName1, String district);
