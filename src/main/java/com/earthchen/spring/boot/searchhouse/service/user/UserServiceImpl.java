@@ -5,6 +5,9 @@ import com.earthchen.spring.boot.searchhouse.dao.UserDao;
 import com.earthchen.spring.boot.searchhouse.domain.Role;
 import com.earthchen.spring.boot.searchhouse.domain.User;
 import com.earthchen.spring.boot.searchhouse.service.IUserService;
+import com.earthchen.spring.boot.searchhouse.service.ServiceResult;
+import com.earthchen.spring.boot.searchhouse.web.dto.UserDTO;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,6 +30,9 @@ public class UserServiceImpl implements IUserService {
     @Autowired
     private RoleDao roleDao;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @Override
     public User findUserByName(String userName) {
         User user = userDao.findByName(userName);
@@ -44,5 +50,15 @@ public class UserServiceImpl implements IUserService {
         roles.forEach(role -> authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName())));
         user.setAuthorityList(authorities);
         return user;
+    }
+
+    @Override
+    public ServiceResult<UserDTO> findById(Long userId) {
+        User user = userDao.findOne(userId);
+        if (user == null) {
+            return ServiceResult.notFound();
+        }
+        UserDTO userDTO = modelMapper.map(user, UserDTO.class);
+        return ServiceResult.of(userDTO);
     }
 }

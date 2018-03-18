@@ -5,6 +5,7 @@ import com.earthchen.spring.boot.searchhouse.service.ServiceResult;
 import com.earthchen.spring.boot.searchhouse.web.dto.HouseDTO;
 import com.earthchen.spring.boot.searchhouse.web.form.DatatableSearchForm;
 import com.earthchen.spring.boot.searchhouse.web.form.HouseForm;
+import com.earthchen.spring.boot.searchhouse.web.form.RentSearchForm;
 
 
 /**
@@ -91,4 +92,12 @@ public interface IHouseService {
      * @return
      */
     ServiceResult updateStatus(Long id, int status);
+
+    /**
+     * 根据查询条件查询
+     *
+     * @param rentSearch
+     * @return
+     */
+    ServiceMultiResult<HouseDTO> query(RentSearchForm rentSearch);
 }

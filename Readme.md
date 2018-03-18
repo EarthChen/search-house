@@ -13,3 +13,4 @@
 1. 使用七牛云oss进行文件上传
 2. 使用spring-session 将session存储在redis中
 5. jpa的动态查询条件
+6. com.earthchen.spring.boot.searchhouse.constant.RentValueBlock  带区间的常用数值定义

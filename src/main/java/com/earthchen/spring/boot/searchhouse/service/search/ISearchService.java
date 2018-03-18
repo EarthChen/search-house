@@ -1,6 +1,8 @@
 package com.earthchen.spring.boot.searchhouse.service.search;
 
-/**
+import com.earthchen.spring.boot.searchhouse.service.ServiceMultiResult;
+import com.earthchen.spring.boot.searchhouse.service.ServiceResult;
+import com.earthchen.spring.boot.searchhouse.web.form.RentSearchForm; /**
  * 检索接口
  *
  * @author: EarthChen
@@ -21,4 +23,8 @@ public interface ISearchService {
      * @param houseId
      */
     void remove(Long houseId);
+
+    ServiceMultiResult<Long> query(RentSearchForm rentSearch);
+
+    ServiceResult<Long> aggregateDistrictHouse(String enName, String enName1, String district);
 }
