@@ -205,6 +205,7 @@ public class HouseServiceImpl implements IHouseService {
         house.setLastUpdateTime(new Date());
         houseDao.save(house);
 
+        // 当审核通过时，构建es索引
         if (house.getStatus() == HouseStatusEnum.PASSES.getValue()) {
             searchService.index(house.getId());
         }

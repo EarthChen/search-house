@@ -10,6 +10,34 @@ spring:
     prefix: classpath:/templates/
     suffix: .html
 
+  # rabbitmq
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+    listener:
+      simple:
+  #        消费者数量
+        concurrency: 10
+        max-concurrency: 10
+  #        消费者每次从队列中获取的消息数量
+        prefetch: 1
+  #        消费者自动启动
+        auto-startup: true
+  #        消费失败，自动重新入队
+        default-requeue-rejected: true
+    template:
+      retry:
+  #      启用发送重试
+        enabled: true
+        initial-interval: 1000
+        max-attempts: 3
+        max-interval: 10000
+        multiplier: 1.0
+
+
 
 
 
@@ -42,6 +70,15 @@ qiniu:
   secretKey: 1FKWdO_E0sKjIghhIfv_8wujMAznQ3s_qbXTot8e
   bucket: search-house
   cdnPrefix: p5jbnmadg.bkt.clouddn.com
+
+
+elasticsearch:
+  esHost: 127.0.0.1
+  esPort: 9300
+  esClusterName: earthchen
+
+
+
 
 
 

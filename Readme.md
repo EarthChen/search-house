@@ -14,3 +14,5 @@
 2. 使用spring-session 将session存储在redis中
 5. jpa的动态查询条件
 6. com.earthchen.spring.boot.searchhouse.constant.RentValueBlock  带区间的常用数值定义
+7. 使用es构建搜索引擎
+8. 使用rabbitmq作为消息队列，进行异步处理

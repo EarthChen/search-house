@@ -2,7 +2,9 @@ package com.earthchen.spring.boot.searchhouse.service.search;
 
 import com.earthchen.spring.boot.searchhouse.service.ServiceMultiResult;
 import com.earthchen.spring.boot.searchhouse.service.ServiceResult;
-import com.earthchen.spring.boot.searchhouse.web.form.RentSearchForm; /**
+import com.earthchen.spring.boot.searchhouse.web.form.RentSearchForm;
+
+/**
  * 检索接口
  *
  * @author: EarthChen
