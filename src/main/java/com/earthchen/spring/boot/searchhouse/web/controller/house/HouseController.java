@@ -12,6 +12,7 @@ import com.earthchen.spring.boot.searchhouse.service.search.ISearchService;
 import com.earthchen.spring.boot.searchhouse.web.dto.*;
 import com.earthchen.spring.boot.searchhouse.web.form.RentSearchForm;
 import com.earthchen.spring.boot.searchhouse.web.vo.ResultVO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +30,7 @@ import java.util.Map;
  * @date: 2018/03/15
  */
 @Controller
+@Slf4j
 public class HouseController {
 
     @Autowired
@@ -193,11 +196,31 @@ public class HouseController {
         model.addAttribute("agent", userDTOServiceResult.getResult());
         model.addAttribute("house", houseDTO);
 
-//        ServiceResult<Long> aggResult = searchService.aggregateDistrictHouse(city.getEnName(), region.getEnName(), houseDTO.getDistrict());
-//        model.addAttribute("houseCountInDistrict", aggResult.getResult());
+        ServiceResult<Long> aggResult = searchService.aggregateDistrictHouse(city.getEnName(), region.getEnName(), houseDTO.getDistrict());
+        model.addAttribute("houseCountInDistrict", aggResult.getResult());
 
         return "house-detail";
     }
+
+    /**
+     * 自动补全接口
+     *
+     * @param prefix 前缀
+     * @return
+     */
+    @GetMapping("rent/house/autocomplete")
+    @ResponseBody
+    public ResultVO autocomplete(@RequestParam(value = "prefix") String prefix) {
+
+        if (prefix.isEmpty()) {
+            return ResultVO.ofStatus(ResultEnum.BAD_REQUEST);
+        }
+        ServiceResult<List<String>> result = searchService.suggest(prefix);
+        log.info(result.getResult().toString());return ResultVO.ofSuccess(result.getResult());
+    }
+
+
+
 
 
 }

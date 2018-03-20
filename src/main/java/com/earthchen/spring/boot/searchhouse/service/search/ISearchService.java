@@ -4,6 +4,8 @@ import com.earthchen.spring.boot.searchhouse.service.ServiceMultiResult;
 import com.earthchen.spring.boot.searchhouse.service.ServiceResult;
 import com.earthchen.spring.boot.searchhouse.web.form.RentSearchForm;
 
+import java.util.List;
+
 /**
  * 检索接口
  *
@@ -34,5 +36,22 @@ public interface ISearchService {
      */
     ServiceMultiResult<Long> query(RentSearchForm rentSearch);
 
-    ServiceResult<Long> aggregateDistrictHouse(String enName, String enName1, String district);
+
+    /**
+     * 聚合特定小区的房间数
+     *
+     * @param cityEnName
+     * @param regionEnName
+     * @param district
+     * @return
+     */
+    ServiceResult<Long> aggregateDistrictHouse(String cityEnName, String regionEnName, String district);
+
+    /**
+     * 根据前缀获取补全建议关键词
+     *
+     * @param prefix
+     * @return
+     */
+    ServiceResult<List<String>> suggest(String prefix);
 }
