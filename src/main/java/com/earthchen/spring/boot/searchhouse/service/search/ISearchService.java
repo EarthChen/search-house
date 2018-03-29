@@ -2,6 +2,8 @@ package com.earthchen.spring.boot.searchhouse.service.search;
 
 import com.earthchen.spring.boot.searchhouse.service.ServiceMultiResult;
 import com.earthchen.spring.boot.searchhouse.service.ServiceResult;
+import com.earthchen.spring.boot.searchhouse.web.dto.HouseBucketDTO;
+import com.earthchen.spring.boot.searchhouse.web.form.MapSearchForm;
 import com.earthchen.spring.boot.searchhouse.web.form.RentSearchForm;
 
 import java.util.List;
@@ -54,4 +56,36 @@ public interface ISearchService {
      * @return
      */
     ServiceResult<List<String>> suggest(String prefix);
+
+    /**
+     * 聚合城市数据
+     *
+     * @param cityEnName
+     * @return
+     */
+    ServiceMultiResult<HouseBucketDTO> mapAggregate(String cityEnName);
+
+    /**
+     * 城市级别查询
+     *
+     * @param cityEnName
+     * @param orderBy
+     * @param orderDirection
+     * @param start
+     * @param size
+     * @return
+     */
+    ServiceMultiResult<Long> mapQuery(String cityEnName,
+                                      String orderBy,
+                                      String orderDirection,
+                                      int start,
+                                      int size);
+
+    /**
+     * 精确范围数据查询
+     *
+     * @param mapSearch
+     * @return
+     */
+    ServiceMultiResult<Long> mapQuery(MapSearchForm mapSearch);
 }

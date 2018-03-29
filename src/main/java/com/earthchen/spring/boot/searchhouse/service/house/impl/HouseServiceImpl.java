@@ -14,10 +14,7 @@ import com.earthchen.spring.boot.searchhouse.util.LoginUserUtil;
 import com.earthchen.spring.boot.searchhouse.web.dto.HouseDTO;
 import com.earthchen.spring.boot.searchhouse.web.dto.HouseDetailDTO;
 import com.earthchen.spring.boot.searchhouse.web.dto.HousePictureDTO;
-import com.earthchen.spring.boot.searchhouse.web.form.DatatableSearchForm;
-import com.earthchen.spring.boot.searchhouse.web.form.HouseForm;
-import com.earthchen.spring.boot.searchhouse.web.form.PhotoForm;
-import com.earthchen.spring.boot.searchhouse.web.form.RentSearchForm;
+import com.earthchen.spring.boot.searchhouse.web.form.*;
 import com.google.common.collect.Maps;
 import com.qiniu.common.QiniuException;
 import com.qiniu.http.Response;
@@ -371,6 +368,32 @@ public class HouseServiceImpl implements IHouseService {
         return simpleQuery(rentSearch);
     }
 
+    @Override
+    public ServiceMultiResult<HouseDTO> wholeMapQuery(MapSearchForm mapSearch) {
+        ServiceMultiResult<Long> serviceResult = searchService.mapQuery(mapSearch.getCityEnName(),
+                mapSearch.getOrderBy(),
+                mapSearch.getOrderDirection(),
+                mapSearch.getStart(),
+                mapSearch.getSize());
+
+        if (serviceResult.getTotal() == 0) {
+            return new ServiceMultiResult<>(0, new ArrayList<>());
+        }
+        List<HouseDTO> houses = wrapperHouseResult(serviceResult.getResult());
+        return new ServiceMultiResult<>(serviceResult.getTotal(), houses);
+    }
+
+    @Override
+    public ServiceMultiResult<HouseDTO> boundMapQuery(MapSearchForm mapSearch) {
+        ServiceMultiResult<Long> serviceResult = searchService.mapQuery(mapSearch);
+        if (serviceResult.getTotal() == 0) {
+            return new ServiceMultiResult<>(0, new ArrayList<>());
+        }
+
+        List<HouseDTO> houses = wrapperHouseResult(serviceResult.getResult());
+        return new ServiceMultiResult<>(serviceResult.getTotal(), houses);
+    }
+
     /**
      * 包装房屋结果
      *
@@ -449,10 +472,10 @@ public class HouseServiceImpl implements IHouseService {
         });
 
         List<HouseTag> houseTags = houseTagDao.findAllByHouseIdIn(houseIds);
-//        houseTags.forEach(houseTag -> {
-//            HouseDTO house = idToHouseMap.get(houseTag.getHouseId());
-//            house.getTags().add(houseTag.getName());
-//        });
+        houseTags.forEach(houseTag -> {
+            HouseDTO house = idToHouseMap.get(houseTag.getHouseId());
+            house.getTags().add(houseTag.getName());
+        });
     }
 
 

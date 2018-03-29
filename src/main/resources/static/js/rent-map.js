@@ -251,6 +251,7 @@ function loadHouseData() {
                             lis.push('<li>数据加载错误</li>');
                         } else {
                             layui.each(res.data, function (index, house) {
+                                console.log(house);
                                 var direction;
                                 switch (house.direction) {
                                     case 1:

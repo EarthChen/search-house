@@ -24,5 +24,5 @@ public class SupportAddressDTO {
 
     private Double baiduMapLongitude;
 
-    private double baiduMapLatitude;
+    private Double baiduMapLatitude;
 }

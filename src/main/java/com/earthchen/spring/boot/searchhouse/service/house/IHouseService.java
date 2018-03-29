@@ -5,6 +5,7 @@ import com.earthchen.spring.boot.searchhouse.service.ServiceResult;
 import com.earthchen.spring.boot.searchhouse.web.dto.HouseDTO;
 import com.earthchen.spring.boot.searchhouse.web.form.DatatableSearchForm;
 import com.earthchen.spring.boot.searchhouse.web.form.HouseForm;
+import com.earthchen.spring.boot.searchhouse.web.form.MapSearchForm;
 import com.earthchen.spring.boot.searchhouse.web.form.RentSearchForm;
 
 
@@ -100,4 +101,20 @@ public interface IHouseService {
      * @return
      */
     ServiceMultiResult<HouseDTO> query(RentSearchForm rentSearch);
+
+    /**
+     * 全地图查询
+     *
+     * @param mapSearch 地图查询参数
+     * @return
+     */
+    ServiceMultiResult<HouseDTO> wholeMapQuery(MapSearchForm mapSearch);
+
+    /**
+     * 精确范围数据查询
+     *
+     * @param mapSearch 地图查询参数
+     * @return
+     */
+    ServiceMultiResult<HouseDTO> boundMapQuery(MapSearchForm mapSearch);
 }

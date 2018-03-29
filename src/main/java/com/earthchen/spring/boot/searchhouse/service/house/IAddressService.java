@@ -6,6 +6,7 @@ package com.earthchen.spring.boot.searchhouse.service.house;
  */
 
 import com.earthchen.spring.boot.searchhouse.domain.SupportAddress;
+import com.earthchen.spring.boot.searchhouse.domain.es.BaiduMapLocation;
 import com.earthchen.spring.boot.searchhouse.service.ServiceMultiResult;
 import com.earthchen.spring.boot.searchhouse.service.ServiceResult;
 import com.earthchen.spring.boot.searchhouse.web.dto.SubwayDTO;
@@ -87,6 +88,16 @@ public interface IAddressService {
      * @return
      */
     ServiceResult<SupportAddressDTO> findCity(String cityEnName);
+
+
+    /**
+     * 根据城市以及具体地位获取百度地图的经纬度
+     *
+     * @param city
+     * @param address
+     * @return
+     */
+    ServiceResult<BaiduMapLocation> getBaiduMapLocation(String city, String address);
 
 }
 

@@ -7,6 +7,7 @@
 3. redis
 4. es 5.6.7
 5. jpa
+6. rabbitmq
 
 ## 技术点
 
