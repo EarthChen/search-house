@@ -23,10 +23,17 @@ import com.earthchen.spring.boot.searchhouse.web.dto.HouseBucketDTO;
 import com.earthchen.spring.boot.searchhouse.web.form.MapSearchForm;
 import com.earthchen.spring.boot.searchhouse.web.form.RentSearchForm;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Longs;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.elasticsearch.action.admin.indices.analyze.AnalyzeAction;
 import org.elasticsearch.action.admin.indices.analyze.AnalyzeRequestBuilder;
 import org.elasticsearch.action.admin.indices.analyze.AnalyzeResponse;
@@ -167,7 +174,6 @@ public class SearchServiceImpl implements ISearchService {
         SupportAddress region = supportAddressDao.findByEnNameAndLevel(house.getRegionEnName(), SupportAddress.Level.REGION.getValue());
 
         String address = city.getCnName() + region.getCnName() + house.getStreet() + house.getDistrict() + detail.getDetailAddress();
-
         ServiceResult<BaiduMapLocation> location = addressService.getBaiduMapLocation(city.getCnName(), address);
         if (!location.isSuccess()) {
             this.index(message.getHouseId(), message.getRetry() + 1);
@@ -199,17 +205,11 @@ public class SearchServiceImpl implements ISearchService {
             success = deleteAndCreate(totalHit, indexTemplate);
         }
 
-//        ServiceResult serviceResult = addressService.lbsUpload(location.getResult(), house.getStreet() + house.getDistrict(),
-//                city.getCnName() + region.getCnName() + house.getStreet() + house.getDistrict(),
-//                message.getHouseId(), house.getPrice(), house.getArea());
-//
-//        if (!success || !serviceResult.isSuccess()) {
-//            this.index(message.getHouseId(), message.getRetry() + 1);
-//        } else {
-//            log.debug("Index success with house " + houseId);
-//
-//        }
-        if (!success) {
+        ServiceResult serviceResult = addressService.lbsUpload(location.getResult(), house.getStreet() + house.getDistrict(),
+                city.getCnName() + region.getCnName() + house.getStreet() + house.getDistrict(),
+                message.getHouseId(), house.getPrice(), house.getArea());
+
+        if (!success || !serviceResult.isSuccess()) {
             this.index(message.getHouseId(), message.getRetry() + 1);
         } else {
             log.debug("Index success with house " + houseId);
@@ -234,20 +234,14 @@ public class SearchServiceImpl implements ISearchService {
         BulkByScrollResponse response = builder.get();
         long deleted = response.getDeleted();
         log.debug("Delete total " + deleted);
-
-//        ServiceResult serviceResult = addressService.removeLbs(houseId);
-//
-//        if (!serviceResult.isSuccess() || deleted <= 0) {
-//            log.warn("Did not remove data from es for response: " + response);
-//            // 重新加入消息队列
-//            this.remove(houseId, message.getRetry() + 1);
-//        }
-        if (deleted <= 0) {
+        ServiceResult serviceResult = addressService.removeLbs(houseId);
+        if (!serviceResult.isSuccess() || deleted <= 0) {
             log.warn("Did not remove data from es for response: " + response);
             // 重新加入消息队列
             this.remove(houseId, message.getRetry() + 1);
         }
     }
+
 
     @Override
     public void index(Long houseId) {
@@ -278,11 +272,7 @@ public class SearchServiceImpl implements ISearchService {
                     .setSource(objectMapper.writeValueAsBytes(indexTemplate), XContentType.JSON).get();
 
             log.debug("Create index with house: " + indexTemplate.getHouseId());
-            if (response.status() == RestStatus.CREATED) {
-                return true;
-            } else {
-                return false;
-            }
+            return response.status() == RestStatus.CREATED;
         } catch (JsonProcessingException e) {
             log.error("Error to index house " + indexTemplate.getHouseId(), e);
             return false;
@@ -299,11 +289,7 @@ public class SearchServiceImpl implements ISearchService {
                     .setDoc(objectMapper.writeValueAsBytes(indexTemplate), XContentType.JSON).get();
 
             log.debug("Update index with house: " + indexTemplate.getHouseId());
-            if (response.status() == RestStatus.OK) {
-                return true;
-            } else {
-                return false;
-            }
+            return response.status() == RestStatus.OK;
         } catch (JsonProcessingException e) {
             log.error("Error to index house " + indexTemplate.getHouseId(), e);
             return false;
