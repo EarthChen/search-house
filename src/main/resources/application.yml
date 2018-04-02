@@ -77,6 +77,17 @@ elasticsearch:
   esPort: 9300
   esClusterName: earthchen
 
+# 阿里云短信
+aliyun:
+  sms:
+    accessKey: LTAISjYxxr5qLmio
+    secretKey: pkqEMJIcVQV8G5fkNEQNDQV7rsntKV
+    templateCode: SMS_95590008aliyun
+
+
+
+
+
 
 
 

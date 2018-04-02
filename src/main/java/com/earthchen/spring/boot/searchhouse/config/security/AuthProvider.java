@@ -1,7 +1,7 @@
 package com.earthchen.spring.boot.searchhouse.config.security;
 
 import com.earthchen.spring.boot.searchhouse.domain.User;
-import com.earthchen.spring.boot.searchhouse.service.IUserService;
+import com.earthchen.spring.boot.searchhouse.service.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.AuthenticationProvider;

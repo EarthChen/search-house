@@ -3,7 +3,7 @@ package com.earthchen.spring.boot.searchhouse.web.controller.house;
 import com.earthchen.spring.boot.searchhouse.constant.RentValueBlock;
 import com.earthchen.spring.boot.searchhouse.domain.SupportAddress;
 import com.earthchen.spring.boot.searchhouse.enums.ResultEnum;
-import com.earthchen.spring.boot.searchhouse.service.IUserService;
+import com.earthchen.spring.boot.searchhouse.service.user.IUserService;
 import com.earthchen.spring.boot.searchhouse.service.ServiceMultiResult;
 import com.earthchen.spring.boot.searchhouse.service.ServiceResult;
 import com.earthchen.spring.boot.searchhouse.service.house.IAddressService;
@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 

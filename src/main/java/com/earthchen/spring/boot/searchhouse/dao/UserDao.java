@@ -18,4 +18,12 @@ public interface UserDao extends JpaRepository<User, Long> {
      * @return
      */
     User findByName(String userName);
+
+    /**
+     * 根据电话号码查询用户
+     *
+     * @param telephone
+     * @return
+     */
+    User findUserByPhoneNumber(String telephone);
 }

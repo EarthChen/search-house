@@ -1,6 +1,6 @@
 package com.earthchen.spring.boot.searchhouse.web.controller.user;
 
-import com.earthchen.spring.boot.searchhouse.service.IUserService;
+import com.earthchen.spring.boot.searchhouse.service.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
