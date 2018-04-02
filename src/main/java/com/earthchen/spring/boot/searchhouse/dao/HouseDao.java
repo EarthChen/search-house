@@ -23,10 +23,21 @@ public interface HouseDao extends PagingAndSortingRepository<House, Long>, JpaSp
     @Query("update House as house set house.cover = :cover where house.id = :id")
     void updateCover(@Param(value = "id") Long id, @Param(value = "cover") String cover);
 
+    /**
+     * 根据id更新房源状态
+     *
+     * @param id
+     * @param status
+     */
     @Modifying
     @Query("update House as house set house.status = :status where house.id = :id")
     void updateStatus(@Param(value = "id") Long id, @Param(value = "status") int status);
 
+    /**
+     * 根据房源id更新看房时间
+     *
+     * @param houseId
+     */
     @Modifying
     @Query("update House as house set house.watchTimes = house.watchTimes + 1 where house.id = :id")
     void updateWatchTimes(@Param(value = "id") Long houseId);

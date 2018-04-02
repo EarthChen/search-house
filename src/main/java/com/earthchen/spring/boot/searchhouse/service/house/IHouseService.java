@@ -1,12 +1,17 @@
 package com.earthchen.spring.boot.searchhouse.service.house;
 
+import com.earthchen.spring.boot.searchhouse.enums.HouseSubscribeStatusEnum;
 import com.earthchen.spring.boot.searchhouse.service.ServiceMultiResult;
 import com.earthchen.spring.boot.searchhouse.service.ServiceResult;
 import com.earthchen.spring.boot.searchhouse.web.dto.HouseDTO;
+import com.earthchen.spring.boot.searchhouse.web.dto.HouseSubscribeDTO;
 import com.earthchen.spring.boot.searchhouse.web.form.DatatableSearchForm;
 import com.earthchen.spring.boot.searchhouse.web.form.HouseForm;
 import com.earthchen.spring.boot.searchhouse.web.form.MapSearchForm;
 import com.earthchen.spring.boot.searchhouse.web.form.RentSearchForm;
+import org.springframework.data.util.Pair;
+
+import java.util.Date;
 
 
 /**
@@ -117,4 +122,50 @@ public interface IHouseService {
      * @return
      */
     ServiceMultiResult<HouseDTO> boundMapQuery(MapSearchForm mapSearch);
+
+    /**
+     * 加入预约清单
+     *
+     * @param houseId
+     * @return
+     */
+    ServiceResult addSubscribeOrder(Long houseId);
+
+    /**
+     * 获取对应状态的预约列表
+     */
+    ServiceMultiResult<Pair<HouseDTO, HouseSubscribeDTO>> querySubscribeList(HouseSubscribeStatusEnum status, int start, int size);
+
+    /**
+     * 预约看房时间
+     *
+     * @param houseId
+     * @param orderTime
+     * @param telephone
+     * @param desc
+     * @return
+     */
+    ServiceResult subscribe(Long houseId, Date orderTime, String telephone, String desc);
+
+    /**
+     * 取消预约
+     *
+     * @param houseId
+     * @return
+     */
+    ServiceResult cancelSubscribe(Long houseId);
+
+    /**
+     * 管理员查询预约信息接口
+     *
+     * @param start
+     * @param size
+     * @return
+     */
+    ServiceMultiResult<Pair<HouseDTO, HouseSubscribeDTO>> findSubscribeList(int start, int size);
+
+    /**
+     * 完成预约
+     */
+    ServiceResult finishSubscribe(Long houseId);
 }
