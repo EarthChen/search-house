@@ -53,7 +53,7 @@ spring:
   mail:
     host: smtp.163.com
     username: m15555000826@163.com
-    password: CYW123456789
+    password: xxx
     properties.mail.smtp.auth: true
 
 
@@ -75,7 +75,7 @@ server:
 # 七牛云配置
 qiniu:
   accessKey: BjSrFopaG-Qpsbj6tiAOvRKTdBecktBYYYw9B9bE
-  secretKey: 1FKWdO_E0sKjIghhIfv_8wujMAznQ3s_qbXTot8e
+  secretKey: xxxx
   bucket: search-house
   cdnPrefix: p5jbnmadg.bkt.clouddn.com
 
@@ -89,7 +89,7 @@ elasticsearch:
 aliyun:
   sms:
     accessKey: LTAISjYxxr5qLmio
-    secretKey: pkqEMJIcVQV8G5fkNEQNDQV7rsntKV
+    secretKey: xxxx
     templateCode: SMS_95590008aliyun
 
 
