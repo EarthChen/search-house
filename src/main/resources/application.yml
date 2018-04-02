@@ -49,6 +49,14 @@ spring:
     # 内存
     store-type: redis
 
+# email 注意替换成自己邮箱的配置
+  mail:
+    host: smtp.163.com
+    username: m15555000826@163.com
+    password: CYW123456789
+    properties.mail.smtp.auth: true
+
+
 
 logging:
   level:

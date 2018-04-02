@@ -66,6 +66,7 @@ public class LoginUrlEntryPoint extends LoginUrlAuthenticationEntryPoint {
     }
 
     /**
+     * 没有权限会进入该方法
      * 如果是Api接口 返回json数据 否则按照一般流程处理
      *
      * @param request

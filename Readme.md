@@ -17,3 +17,4 @@
 6. com.earthchen.spring.boot.searchhouse.constant.RentValueBlock  带区间的常用数值定义
 7. 使用es构建搜索引擎
 8. 使用rabbitmq作为消息队列，进行异步处理
+9. 阿里短信实现验证码登录
